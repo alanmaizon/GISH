@@ -7,4 +7,3 @@ GISH/.env
 # Ignore Python bytecode files
 **__pycache__/
 *.py[cod]
-*.pyc[cod]
