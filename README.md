@@ -1,13 +1,12 @@
 # **GISH** 
-### (Glamorous, Innovative, Stylish, and Hip)
+### (Glamorous, Innovative, Stylish, and Human)
 
 ### **Personalized Name Necklace Order Platform**
 
 ---
 
 ### **Description**  
-A web application that allows users to design customizable name necklaces, place orders, and track delivery dates. It integrates user management, an intuitive ordering process, and admin functionality to manage orders and suppliers.
-
+Web application for designing customizable name necklaces, ordering, and tracking delivery dates by users. Combines user management with the possibility of intuitively ordering and admin functionality for order management and suppliers.
 ---
 
 ### **Features and Functionalities**  
