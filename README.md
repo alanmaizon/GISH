@@ -59,18 +59,10 @@ A web application that allows users to design customizable name necklaces, place
 
 #### **Phase 2: Database Schema Design**
 Define models for:
-1. **Users**: Extend `AbstractUser` to include additional fields like `address` and `phone_number`.
-2. **Products**:
-   - `Material`: e.g., Gold, Silver.
-   - `FontStyle`: e.g., Arial, Script.
-   - `ChainType`: e.g., Cable, Figaro.
-3. **Orders**:
-   - `User`: ForeignKey to associate the order with a user.
-   - `NecklaceDetails`: JSON field to store customization details (e.g., name, font, material).
-   - `Status`: Order status.
-   - `SupplierDeliveryDate`: Expected delivery date.
-4. **Messages**:
-   - `Sender`, `Receiver`, `Content`, and `IsArchived`.
+1. **Users**
+2. **Products**
+3. **Orders**
+4. **Messages**
 
 #### **Phase 3: Backend Functionalities**
 - **User Authentication**:
@@ -140,57 +132,70 @@ Define models for:
 
 ```mermaid
 erDiagram
-    CUSTOMER {
+    USER {
         int customer_id PK
         string name
         string email
         string phone_number
+
+    }
+
+    PRODUCT {
+        int product_id PK
+        string custom_name
+        int chain_type_id FK
+        int chain_length_id FK
+        int material_id FK
+        int font_style_id FK
+    }
+
+    CHAIN_TYPE {
+        int chain_type_id PK
+        string chain_type_name
+        decimal price_modifier
+    }
+
+    CHAIN_LENGTH {
+        int chain_length_id PK
+        string chain_length
+        decimal price_modifier
+    }
+
+    MATERIAL {
+        int material_id PK
+        string material_name
+        decimal price_modifier
+    }
+
+    FONT_STYLE {
+        int font_style_id PK
+        string font_style_name
     }
 
     ORDER {
         int order_id PK
         datetime order_date
         int customer_id FK
+        string status
     }
 
-    PRODUCT {
-        int product_id PK
-        float final_price
-        string custom_name
-        datetime created_at
-        int chain_type_id FK
-        int chain_length_id FK
-        int material_id FK
-        int font_style_id FK
-        int order_id FK
+    MESSAGE {
+        int id PK
+        int sender_id FK
+        int receiver_id FK
+        text content
+        datetime timestamp
+        boolean is_archived
     }
 
-    CHAIN_TYPE {
-        int chain_type_id PK
-        string type_name
-    }
-
-    CHAIN_LENGTH {
-        int chain_length_id PK
-        string length
-    }
-
-    MATERIAL {
-        int material_id PK
-        string material_name
-    }
-
-    FONT_STYLE {
-        int font_style_id PK
-        string style_name
-    }
-
-    CUSTOMER ||--o{ ORDER : "places"
+    USER ||--o{ ORDER : "places"
     ORDER ||--o{ PRODUCT : "includes"
     PRODUCT }o--|| CHAIN_TYPE : "has"
     PRODUCT }o--|| CHAIN_LENGTH : "has"
     PRODUCT }o--|| MATERIAL : "has"
     PRODUCT }o--|| FONT_STYLE : "has"
+    USER ||--o{ MESSAGE : "sends"
+    MESSAGE }o--|| USER : "received by"
 ```
 
 

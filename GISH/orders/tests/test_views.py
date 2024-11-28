@@ -1,10 +1,10 @@
 from django.test import TestCase
 from django.urls import reverse
-from orders.models import Customer
+from orders.models import User
 
 class CustomizationViewTest(TestCase):
     def setUp(self):
-        self.customer = Customer.objects.create_user(username="testuser", password="password123")
+        self.user = User.objects.create_user(username="testuser", password="password123")
 
     def test_customization_view_unauthenticated(self):
         response = self.client.get(reverse("customization"))

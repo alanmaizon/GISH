@@ -4,24 +4,25 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
 from .forms import CustomUserCreationForm, ProductForm
-from .models import Product
+from .models import Product, Order, Message
 
-@login_required
+def home(request):
+    """
+    Home view for the main page.
+    """
+    products = Product.objects.all()
+    return render(request, 'orders/home.html', {'products': products})
+
 def create_product(request):
     """
     View for creating a product with customization options.
     """
-    if request.method == "POST":
+    if request.method == 'POST':
         form = ProductForm(request.POST)
         if form.is_valid():
-            product = form.save(commit=False)
-            product.calculate_final_price()
-            product.generate_stock_code()
-            product.save()
-            messages.success(request, "Product created successfully!")
-            return redirect(reverse('home'))
-        else:
-            messages.error(request, "Please correct the errors below.")
+            product = form.save()
+            # Redirect to an order summary page or another view
+            return redirect('order_summary')
     else:
         form = ProductForm()
     return render(request, 'orders/product_form.html', {'form': form})
@@ -63,9 +64,9 @@ def user_login(request):
             return redirect(reverse('home'))
         else:
             messages.error(request, "Invalid username or password.")
-    return render(request, 'orders/login.html')
+    return render(request, 'accounts/login.html')
 
-@login_required
+
 def user_logout(request):
     """
     User logout view.
@@ -73,3 +74,14 @@ def user_logout(request):
     logout(request)
     messages.success(request, "You have been logged out.")
     return redirect(reverse('login'))
+
+@login_required
+def user_orders(request):
+    orders = Order.objects.filter(customer=request.user)
+    return render(request, 'orders/user_orders.html', {'orders': orders})
+
+
+@login_required
+def inbox(request):
+    received_messages = Message.objects.filter(receiver=request.user)
+    return render(request, 'orders/inbox.html', {'messages': received_messages})

@@ -1,7 +1,7 @@
-from orders.models import Customer
+from orders.models import User
 
 # Create a new staff user
-staff_user = Customer.objects.create_user(
+staff_user = User.objects.create_user(
     username="staff_user",
     email="staff@example.com",
     password="securepassword123"

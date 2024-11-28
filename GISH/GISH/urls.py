@@ -20,5 +20,6 @@ from django.urls import path, include  # Import `include` to link app URLs
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('allauth.urls')),  # Django-Allauths
     path('', include('orders.urls')),  # Include URLs from the orders app
 ]

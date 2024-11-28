@@ -1,0 +1,16 @@
+{% extends "orders/base.html" %}
+
+{% block title %}Inbox{% endblock %}
+
+{% block content %}
+<h2>Inbox</h2>
+<ul>
+    {% for message in messages %}
+        <li>
+            From: {{ message.sender.username }}<br>
+            {{ message.content }}
+        </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
