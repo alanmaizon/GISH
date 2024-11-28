@@ -3,7 +3,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
-from .forms import CustomUserCreationForm, ProductForm
+from .forms import CustomUserCreationForm, ProductForm, LoginForm
 from .models import Product, Order, Message
 
 def home(request):
@@ -45,27 +45,27 @@ def register(request):
             messages.error(request, "Please correct the errors below.")
     else:
         form = CustomUserCreationForm()
-    return render(request, 'orders/register.html', {'form': form})
+    return render(request, 'accounts/register.html', {'form': form})
+
 
 def user_login(request):
-    """
-    User login view.
-    """
-    if request.user.is_authenticated:
-        return redirect(reverse('home'))  # Redirect already logged-in users
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
+            
+            if user is not None:
+                login(request, user)
+                # You can customize the redirect URL based on your needs
+                return redirect('home')  # Replace 'home' with your desired URL name
+            else:
+                form.add_error(None, 'Invalid username or password')
+    else:
+        form = LoginForm()
 
-    if request.method == "POST":
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            messages.success(request, f"Welcome back, {user.username}!")
-            return redirect(reverse('home'))
-        else:
-            messages.error(request, "Invalid username or password.")
-    return render(request, 'accounts/login.html')
-
+    return render(request, 'accounts/login.html', {'form': form})
 
 def user_logout(request):
     """
