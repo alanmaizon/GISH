@@ -1,6 +1,9 @@
 from django import forms
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from .models import User, Product, Message
+
+User = get_user_model()
 
 class ProductForm(forms.ModelForm):
     class Meta:
@@ -25,6 +28,10 @@ class MessageForm(forms.ModelForm):
     class Meta:
         model = Message
         fields = ['receiver', 'content']
+        widgets = {
+            'receiver': forms.Select(attrs={'class': 'form-control'}),
+            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
 
 class LoginForm(forms.Form):
     username = forms.CharField(widget=forms.TextInput(attrs={
@@ -35,3 +42,12 @@ class LoginForm(forms.Form):
         'class': 'form-control',
         'placeholder': 'Password'
     }))
+
+class EmailChangeForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['email']
+        widgets = {
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+        }
+

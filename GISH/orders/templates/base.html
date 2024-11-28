@@ -20,7 +20,20 @@
                     <li class="nav-item"><a class="nav-link" href="/product/create/">Customize Necklace</a></li>
                     <li class="nav-item"><a class="nav-link" href="/orders/">My Orders</a></li>
                     <li class="nav-item"><a class="nav-link" href="/inbox/">Inbox</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/accounts/logout/">Logout</a></li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="/change-password/">Change Password</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/email_change/">Change Email</a></li>
+                    <li class="nav-item">
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger nav-link">Logout</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a href="{% url 'login' %}" class="btn btn-primary nav-link">Login</a>
+                    </li>
+                {% endif %}
                 </ul>
             </div>
         </div>

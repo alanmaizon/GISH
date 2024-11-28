@@ -76,7 +76,7 @@ ROOT_URLCONF = 'GISH.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # Add this line
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -114,9 +114,25 @@ AUTHENTICATION_BACKENDS = [
 
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"  # Options: none, optional, mandatory
+ACCOUNT_AUTHENTICATION_METHOD = "email"  # Options: username, email
+ACCOUNT_UNIQUE_EMAIL = True  # Enforce uniqueness of email addresses
+
+ACCOUNT_SESSION_REMEMBER = True  # Remember the session after login
+
 LOGIN_URL = 'login'  # This will use the URL pattern named 'login'
 LOGIN_REDIRECT_URL = 'home'  # After successful login, redirect here
-LOGOUT_REDIRECT_URL = 'home'  # After logout, redirect here
+LOGOUT_REDIRECT_URL = 'logout'  # After logout, redirect here
+
+ACCOUNT_LOGOUT_ON_GET = False  # Requires POST request for security
+ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True  # Logout on password change
+
+# Message settings (optional)
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger',  # Bootstrap class
+    messages.SUCCESS: 'success',
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

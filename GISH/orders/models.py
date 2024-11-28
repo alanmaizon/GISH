@@ -70,7 +70,6 @@ class Product(models.Model):
         Calculate the final price dynamically based on the base price and modifiers.
         """
         return (
-            self.base_price
             + self.chain_type.price_modifier
             + self.chain_length.price_modifier
             + self.material.price_modifier

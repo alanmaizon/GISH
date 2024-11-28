@@ -3,7 +3,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
-from .forms import CustomUserCreationForm, ProductForm, LoginForm
+from .forms import CustomUserCreationForm, ProductForm, LoginForm, MessageForm, EmailChangeForm
 from .models import Product, Order, Message
 
 def home(request):
@@ -45,8 +45,7 @@ def register(request):
             messages.error(request, "Please correct the errors below.")
     else:
         form = CustomUserCreationForm()
-    return render(request, 'accounts/register.html', {'form': form})
-
+    return render(request, 'orders/register.html', {'form': form})
 
 def user_login(request):
     if request.method == 'POST':
@@ -65,15 +64,11 @@ def user_login(request):
     else:
         form = LoginForm()
 
-    return render(request, 'accounts/login.html', {'form': form})
+    return render(request, 'orders/login.html', {'form': form})
 
 def user_logout(request):
-    """
-    User logout view.
-    """
     logout(request)
-    messages.success(request, "You have been logged out.")
-    return redirect(reverse('login'))
+    return redirect('/')
 
 @login_required
 def user_orders(request):
@@ -83,5 +78,34 @@ def user_orders(request):
 
 @login_required
 def inbox(request):
-    received_messages = Message.objects.filter(receiver=request.user)
-    return render(request, 'orders/inbox.html', {'messages': received_messages})
+    # Display received messages
+    messages = Message.objects.filter(receiver=request.user).order_by('-timestamp')
+
+    # Handle sending new messages
+    if request.method == 'POST':
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.sender = request.user  # Set the sender as the logged-in user
+            message.save()
+            return redirect('inbox')  # Redirect to inbox after sending
+    else:
+        form = MessageForm()
+
+    return render(request, 'orders/inbox.html', {'messages': messages, 'form': form})
+
+@login_required
+def change_email(request):
+    user = request.user
+    if request.method == 'POST':
+        form = EmailChangeForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('email_change_done')
+    else:
+        form = EmailChangeForm(instance=user)
+    return render(request, 'orders/email_change.html', {'form': form})
+
+@login_required
+def email_change_done(request):
+    return render(request, 'orders/email_change_done.html')
