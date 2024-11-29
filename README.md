@@ -1,5 +1,4 @@
-# **GISH** 
-### (Glamorous, Innovative, Stylish, and Human)
+# GISH
 
 ### **Personalized Name Necklace Order Platform**
 
