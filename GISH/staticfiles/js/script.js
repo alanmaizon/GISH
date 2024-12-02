@@ -6,11 +6,11 @@ function init(containerId) {
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x111111);
 
-    camera = new THREE.PerspectiveCamera(10, window.innerWidth / window.innerHeight, 1, 1000);
-    camera.position.set(0, 1, 20);
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 2, 5);
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth/2,  window.innerHeight/2);
+    renderer.setSize(600, 400);
     document.getElementById(containerId).appendChild(renderer.domElement);
 
     // Lighting
@@ -31,7 +31,7 @@ function init(containerId) {
 // Load font and create text
 function loadFontAndCreateText(message) {
     const fontLoader = new THREE.FontLoader();
-    fontLoader.load('/static/fonts/MAGENTA.json', function (font) {
+    fontLoader.load('static/fonts/MAGENTA.json', function (font) {
         createTextMesh(message, font);
     });
 }
@@ -44,7 +44,7 @@ function createTextMesh(message, font) {
         height: 0.1,
         curveSegments: 40,
         bevelEnabled: true,
-        bevelThickness: 0.10,
+        bevelThickness: 0.02,
         bevelSize: 0.01,
         bevelSegments: 5
     });
@@ -52,7 +52,7 @@ function createTextMesh(message, font) {
     const textureLoader = new THREE.TextureLoader();
     const textMaterial = new THREE.MeshStandardMaterial({
         color: 0xffd700, // Gold color
-        map: textureLoader.load('/static/textures/text_texture.png')
+        map: textureLoader.load('static/textures/text_texture.png')
     });
 
     if (textMesh) {
@@ -61,16 +61,10 @@ function createTextMesh(message, font) {
 
     textMesh = new THREE.Mesh(textGeometry, textMaterial);
     textGeometry.computeBoundingBox();
-    const boundingBox = textGeometry.boundingBox;
-    const center = new THREE.Vector3();
-    boundingBox.getCenter(center);
-    textGeometry.translate(-center.x, -center.y, -center.z);
-    textMesh.position.set(0, 1, 0);
+    const textWidth = textGeometry.boundingBox.max.x - textGeometry.boundingBox.min.x;
+    textMesh.position.set(-textWidth / 2, 1, 0);
     scene.add(textMesh);
 }
-
-
-
 
 // Update text dynamically
 function updateText() {
@@ -86,7 +80,7 @@ function updateText() {
 function animate() {
     requestAnimationFrame(animate);
     if (textMesh) {
-        textMesh.rotation.y += 0.003;// Rotate the text
+        textMesh.rotation.y += 0.01; // Rotate the text
     }
     renderer.render(scene, camera);
 }
