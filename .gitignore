@@ -1,6 +1,6 @@
 # Ignore virtual environment
 .venv/
-static/
+admin/
 # Ignore environment file and folder
 GISH/.env
 

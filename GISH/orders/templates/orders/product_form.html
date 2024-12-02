@@ -1,26 +1,32 @@
 {% extends "base.html" %}
 
-{% block title %}Customize Your Necklace{% endblock %}
+{% block title %}Customize Necklace{% endblock %}
 
 {% block content %}
-{% load crispy_forms_tags %}
-<form method="POST">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <div id="preview">
-        <h3>Preview:</h3>
-        <p id="name_preview"></p>
-    </div>
-    <button type="submit" class="btn btn-primary">Add to Cart</button>
-</form>
+<div class="container mt-5">
+    {% load crispy_forms_tags %}
+    <h2>Customize Your Necklace</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form|crispy }}
 
+        <!-- User Input for Text Update -->
+        <div id="controls" class="mt-4">
+            <input type="text" id="userInput" maxlength="10" placeholder="Enter name for necklace" class="form-control mb-2">
+            <button type="button" class="btn btn-primary" onclick="updateText()">Preview Text</button>
+        </div>
+        <!-- 3D Preview Container -->
+        <div id="container"></div>
+
+        <button type="submit" class="btn btn-success mt-3">Add to Cart</button>
+    </form>
+</div>
+
+<!-- Include Three.js and GLTFLoader -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/loaders/GLTFLoader.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/loaders/FontLoader.min.js"></script>
 <script>
-    const nameInput = document.getElementById('id_custom_name');
-    const namePreview = document.getElementById('name_preview');
-
-    nameInput.addEventListener('input', function() {
-        namePreview.innerText = `Name: ${nameInput.value}`;
-    });
+    // Your Three.js code for interactive updates
 </script>
-
 {% endblock %}

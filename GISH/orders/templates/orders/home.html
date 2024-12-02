@@ -1,1 +1,29 @@
 {% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>3D Necklace Preview</h2>
+    <div id="container" style="width: 100%; height: 500px; border: 1px solid #ccc;"></div>
+</div>
+
+<!-- Include Three.js and GLTFLoader -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/loaders/GLTFLoader.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/loaders/FontLoader.min.js"></script>
+<script>
+    // Your Three.js code here
+    // Adjust camera settings for better preview
+    camera.position.set(2, 2, 5);
+
+    function animate() {
+        requestAnimationFrame(animate);
+        if (textMesh) {
+            textMesh.rotation.y += 0.01; // Rotate the text
+        }
+        renderer.render(scene, camera);
+    }
+    animate();
+</script>
+{% endblock %}
