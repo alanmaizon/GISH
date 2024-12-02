@@ -1,5 +1,7 @@
 // Common variables
 let scene, camera, renderer, textMesh;
+let currentMaterial; // Store current material
+let currentFontPath = '/static/fonts/MAGENTA.json'; // Default font path
 
 // Initialize the scene
 function init(containerId) {
@@ -10,7 +12,7 @@ function init(containerId) {
     camera.position.set(0, 1, 20);
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth/2,  window.innerHeight/2);
+    renderer.setSize(window.innerWidth / 2, window.innerHeight / 2);
     document.getElementById(containerId).appendChild(renderer.domElement);
 
     // Lighting
@@ -21,8 +23,15 @@ function init(containerId) {
     directionalLight.position.set(0, 1, 1).normalize();
     scene.add(directionalLight);
 
-    // Initial text
-    loadFontAndCreateText("GISH");
+    // Set default material
+    currentMaterial = new THREE.MeshStandardMaterial({
+        color: 0xc57d5a, // Default: Rose Gold
+        roughness: 0.5,
+        metalness: 0.5,
+    });
+
+    // Load initial text
+    loadFontAndCreateText("Gish");
 
     // Animate
     animate();
@@ -31,7 +40,7 @@ function init(containerId) {
 // Load font and create text
 function loadFontAndCreateText(message) {
     const fontLoader = new THREE.FontLoader();
-    fontLoader.load('/static/fonts/MAGENTA.json', function (font) {
+    fontLoader.load(currentFontPath, function (font) {
         createTextMesh(message, font);
     });
 }
@@ -44,22 +53,16 @@ function createTextMesh(message, font) {
         height: 0.1,
         curveSegments: 40,
         bevelEnabled: true,
-        bevelThickness: 0.10,
+        bevelThickness: 0.02,
         bevelSize: 0.01,
         bevelSegments: 5
-    });
-
-    const textureLoader = new THREE.TextureLoader();
-    const textMaterial = new THREE.MeshStandardMaterial({
-        color: 0xffd700, // Gold color
-        map: textureLoader.load('/static/textures/text_texture.png')
     });
 
     if (textMesh) {
         scene.remove(textMesh);
     }
 
-    textMesh = new THREE.Mesh(textGeometry, textMaterial);
+    textMesh = new THREE.Mesh(textGeometry, currentMaterial);
     textGeometry.computeBoundingBox();
     const boundingBox = textGeometry.boundingBox;
     const center = new THREE.Vector3();
@@ -68,9 +71,6 @@ function createTextMesh(message, font) {
     textMesh.position.set(0, 1, 0);
     scene.add(textMesh);
 }
-
-
-
 
 // Update text dynamically
 function updateText() {
@@ -82,11 +82,52 @@ function updateText() {
     }
 }
 
+// Update material dynamically
+function updateMaterial(materialName) {
+    switch (materialName) {
+        case "Silver":
+            currentMaterial = new THREE.MeshStandardMaterial({
+                color: 0xc0c0c0, // Silver
+                roughness: 0.5,
+                metalness: 0.8,
+            });
+            break;
+        case "Gold":
+            currentMaterial = new THREE.MeshStandardMaterial({
+                color: 0xffd700, // Gold
+                roughness: 0.4,
+                metalness: 0.9,
+            });
+            break;
+        case "Rose Gold":
+            currentMaterial = new THREE.MeshStandardMaterial({
+                color: 0xc57d5a, // Rose Gold
+                roughness: 0.5,
+                metalness: 0.5,
+            });
+            break;
+    }
+    loadFontAndCreateText(document.getElementById('userInput').value || 'Gish');
+}
+
+// Update font dynamically
+function updateFont(fontName) {
+    switch (fontName) {
+        case "Script":
+            currentFontPath = '/static/fonts/MAGENTA.json';
+            break;
+        case "Bold":
+            currentFontPath = '/static/fonts/block.json';
+            break;
+    }
+    loadFontAndCreateText(document.getElementById('userInput').value || 'Gish');
+}
+
 // Animation loop
 function animate() {
     requestAnimationFrame(animate);
     if (textMesh) {
-        textMesh.rotation.y += 0.003;// Rotate the text
+        textMesh.rotation.y += 0.003; // Rotate the text
     }
     renderer.render(scene, camera);
 }
@@ -96,6 +137,7 @@ if (document.getElementById('container')) {
     init('container');
 }
 
+// Handle window resizing
 window.addEventListener('resize', function () {
     renderer.setSize(window.innerWidth, window.innerHeight);
     camera.aspect = window.innerWidth / window.innerHeight;

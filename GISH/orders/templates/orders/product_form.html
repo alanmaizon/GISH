@@ -3,23 +3,52 @@
 {% block title %}Customize Necklace{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="col mt-6">
     {% load crispy_forms_tags %}
-    <h2>Customize Your Necklace</h2>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form|crispy }}
-
-        <!-- User Input for Text Update -->
-        <div id="controls" class="mt-4">
-            <input type="text" id="userInput" maxlength="10" placeholder="Enter name for necklace" class="form-control mb-2">
-            <button type="button" class="btn btn-primary" onclick="updateText()">Preview Text</button>
+    <h2 class="mb-4">Customize Your Necklace</h2>
+    <div class="row">
+        <!-- Sidebar Form -->
+        <div class="col-md-4">
+            <form method="POST" class="shadow p-4 rounded bg-light">
+                {% csrf_token %}
+                {{ form|crispy }}
+                
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-success w-100">Add to Cart</button>
+            </form>
         </div>
-        <!-- 3D Preview Container -->
-        <div id="container"></div>
 
-        <button type="submit" class="btn btn-success mt-3">Add to Cart</button>
-    </form>
+        
+        <div class="col-md-6" >
+            <h4 class="mb-3">Customization Options</h4>
+                
+            <!-- Material Dropdown -->
+            <label for="material" class="form-label">Material:</label>
+            <select id="material" class="form-select mb-3" onchange="updateMaterial(this.value)">
+                <option value="Rose Gold" selected>Rose Gold</option>
+                <option value="Silver">Silver</option>
+                <option value="Gold">Gold</option>
+            </select>
+            
+            <!-- Font Style Dropdown -->
+            <label for="font_style" class="form-label">Font Style:</label>
+            <select id="font_style" class="form-select mb-3" onchange="updateFont(this.value)">
+                <option value="Script" selected>Script</option>
+                <option value="Bold">Bold</option>
+            </select>
+
+            <!-- User Input -->
+            <label for="userInput" class="form-label">Enter Name:</label>
+            <input type="text" id="userInput" maxlength="10" placeholder="Enter name for necklace" class="form-control mb-3">
+
+            <!-- Preview Button -->
+            <button type="button" class="btn btn-primary w-100 mb-3" onclick="updateText()">Preview Text</button>
+                <!-- 3D Preview Container -->
+                <div class="col-md-8 d-flex align-items-center">
+                    <div id="container"></div>
+                </div>
+        </div>
+    </div>
 </div>
 
 <!-- Include Three.js and GLTFLoader -->
@@ -27,6 +56,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/loaders/GLTFLoader.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/loaders/FontLoader.min.js"></script>
 <script>
-    // Your Three.js code for interactive updates
+window.addEventListener('resize', function () {
+    renderer.setSize(container.offsetWidth, container.offsetWidth);
+    camera.aspect = container.offsetWidth / container.offsetHeight;
+    camera.updateProjectionMatrix();
+});
 </script>
 {% endblock %}
