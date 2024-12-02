@@ -3,7 +3,7 @@
 {% block title %}Customize Necklace{% endblock %}
 
 {% block content %}
-<div class="col mt-6">
+<div class="container mt-5">
     {% load crispy_forms_tags %}
     <h2 class="mb-4">Customize Your Necklace</h2>
     <div class="row">
@@ -11,55 +11,88 @@
         <div class="col-md-4">
             <form method="POST" class="shadow p-4 rounded bg-light">
                 {% csrf_token %}
-                {{ form|crispy }}
-                
-            <!-- Submit Button -->
-            <button type="submit" class="btn btn-success w-100">Add to Cart</button>
+                {{ form.custom_name|as_crispy_field }}
+
+                <h4 class="mb-3">Customization Options</h4>
+                <!-- Material Dropdown -->
+                <div class="mb-3">
+                    {{ form.material.label_tag }}
+                    {{ form.material|as_crispy_field }}
+                </div>
+
+                <!-- Chain Type Dropdown -->
+                <div class="mb-3">
+                    {{ form.chain_type.label_tag }}
+                    {{ form.chain_type|as_crispy_field }}
+                </div>
+
+                <!-- Chain Length Dropdown -->
+                <div class="mb-3">
+                    {{ form.chain_length.label_tag }}
+                    {{ form.chain_length|as_crispy_field }}
+                </div>
+
+                <!-- Font Style Dropdown -->
+                <div class="mb-3">
+                    {{ form.font_style.label_tag }}
+                    {{ form.font_style|as_crispy_field }}
+                </div>
+
+                <!-- Total Price Display -->
+                <div class="mb-3">
+                    <h5>Total Price: $<span id="total-price">0.00</span></h5>
+                </div>
+                <div class="mb-3">
+                    <button type="button" class="btn btn-primary w-100" onclick="updatePreview()">Update Preview</button>
+                </div>
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-success w-100">Add to Cart</button>
             </form>
         </div>
 
-        
-        <div class="col-md-6" >
-            <h4 class="mb-3">Customization Options</h4>
-                
-            <!-- Material Dropdown -->
-            <label for="material" class="form-label">Material:</label>
-            <select id="material" class="form-select mb-3" onchange="updateMaterial(this.value)">
-                <option value="Rose Gold" selected>Rose Gold</option>
-                <option value="Silver">Silver</option>
-                <option value="Gold">Gold</option>
-            </select>
-            
-            <!-- Font Style Dropdown -->
-            <label for="font_style" class="form-label">Font Style:</label>
-            <select id="font_style" class="form-select mb-3" onchange="updateFont(this.value)">
-                <option value="Script" selected>Script</option>
-                <option value="Bold">Bold</option>
-            </select>
-
-            <!-- User Input -->
-            <label for="userInput" class="form-label">Enter Name:</label>
-            <input type="text" id="userInput" maxlength="10" placeholder="Enter name for necklace" class="form-control mb-3">
-
-            <!-- Preview Button -->
-            <button type="button" class="btn btn-primary w-100 mb-3" onclick="updateText()">Preview Text</button>
-                <!-- 3D Preview Container -->
-                <div class="col-md-8 d-flex align-items-center">
-                    <div id="container"></div>
-                </div>
+        <!-- 3D Preview Container -->
+        <div class="col-md-8 d-flex align-items-center justify-content-center">
+            <div id="container"></div>
         </div>
     </div>
 </div>
 
-<!-- Include Three.js and GLTFLoader -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/loaders/GLTFLoader.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/loaders/FontLoader.min.js"></script>
 <script>
-window.addEventListener('resize', function () {
-    renderer.setSize(container.offsetWidth, container.offsetWidth);
-    camera.aspect = container.offsetWidth / container.offsetHeight;
-    camera.updateProjectionMatrix();
-});
+    const selectedPrices = {
+        material: 0,
+        chain_type: 0,
+        chain_length: 0,
+    };
+
+    // Function to fetch price from the server
+    function updatePrice(type, id) {
+        fetch(`/get_price/?type=${type}&id=${id}`)
+            .then(response => response.json())
+            .then(data => {
+                selectedPrices[type] = parseFloat(data.price) || 0; // Update the selected price
+                calculateTotalPrice();
+            })
+            .catch(error => console.error('Error fetching price:', error));
+    }
+
+    // Calculate the total price
+    function calculateTotalPrice() {
+        const totalPrice = Object.values(selectedPrices).reduce((sum, price) => sum + price, 0);
+        document.getElementById('total-price').innerText = totalPrice.toFixed(2);
+    }
+
+    // Attach event listeners to the dropdowns
+    document.getElementById('id_material').addEventListener('change', function () {
+        updatePrice('material', this.value);
+    });
+    document.getElementById('id_chain_type').addEventListener('change', function () {
+        updatePrice('chain_type', this.value);
+    });
+    document.getElementById('id_chain_length').addEventListener('change', function () {
+        updatePrice('chain_length', this.value);
+    });
 </script>
 {% endblock %}

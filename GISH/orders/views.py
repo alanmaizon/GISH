@@ -4,7 +4,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
 from .forms import CustomUserCreationForm, ProductForm, LoginForm, MessageForm, EmailChangeForm
-from .models import Product, Order, Message
+from .models import Product, Order, Message, ChainType, ChainLength, Material
+from django.http import JsonResponse
+
 
 def home(request):
     """
@@ -17,15 +19,10 @@ def create_product(request):
     """
     View for creating a product with customization options.
     """
-    if request.method == 'POST':
-        form = ProductForm(request.POST)
-        if form.is_valid():
-            product = form.save()
-            # Redirect to an order summary page or another view
-            return redirect('order_summary')
-    else:
-        form = ProductForm()
-    return render(request, 'orders/product_form.html', {'form': form})
+    form = ProductForm()
+    return render(request, 'orders/product_form.html', {
+        'form': form,
+    })
 
 def register(request):
     """
@@ -109,3 +106,17 @@ def change_email(request):
 @login_required
 def email_change_done(request):
     return render(request, 'orders/email_change_done.html')
+
+def get_price(request):
+    item_type = request.GET.get('type')  # Type: 'chain_type', 'material', etc.
+    item_id = request.GET.get('id')     # Selected item's ID
+
+    price = 0.0
+    if item_type == "chain_type":
+        price = ChainType.objects.filter(id=item_id).values_list('price_modifier', flat=True).first()
+    elif item_type == "chain_length":
+        price = ChainLength.objects.filter(id=item_id).values_list('price_modifier', flat=True).first()
+    elif item_type == "material":
+        price = Material.objects.filter(id=item_id).values_list('price_modifier', flat=True).first()
+
+    return JsonResponse({'price': price})

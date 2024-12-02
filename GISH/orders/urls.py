@@ -4,6 +4,7 @@ from . import views  # Import views from the current directory
 
 urlpatterns = [
     path('', views.home, name='home'),
+    path('get_price/', views.get_price, name='get_price'),
     path('register/', views.register, name='register'),
     path('login/', views.user_login, name='login'),
     path('logout/', LogoutView.as_view(template_name='orders/logout.html'), name='logout'),
