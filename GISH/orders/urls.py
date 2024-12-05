@@ -16,4 +16,5 @@ urlpatterns = [
     path('change-password/done/', PasswordChangeDoneView.as_view(template_name='orders/change_password_done.html'), name='password_change_done'),
     path('email_change/', views.change_email, name='email_change'),
     path('email_change/done/', views.email_change_done, name='email_change_done'),
+    path('delivery-returns/', views.delivery_returns, name='delivery_returns'),
 ]

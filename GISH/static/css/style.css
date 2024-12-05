@@ -1,4 +1,50 @@
 canvas {
-    height: 400px;
-    width: 600px;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    height: auto;
+}
+
+#container {
+    max-width: 80%; /* Adjust based on preference */
+    width: 100%;
+}
+
+.preview-container {
+    justify-content: center;
+    align-items: center;
+    height: 500px;
+}
+
+
+/* Hero Section */
+.bg-burgundy {
+    background-color: #800020; /* Burgundy */
+    color: #ffffff;
+}
+
+/* Custom Button Colors */
+.btn-burgundy {
+    background-color: #800020;
+    color: #ffffff;
+    border: none;
+}
+
+.btn-burgundy:hover {
+    background-color: #a83240;
+    color: #ffffff;
+}
+
+/* Benefits Icons and Text */
+.text-burgundy {
+    color: #800020;
+}
+
+.bi {
+    font-size: 3rem;
+}
+
+h5 {
+    font-weight: bold;
 }

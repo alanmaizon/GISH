@@ -3,13 +3,37 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2>3D Necklace Preview</h2>
-    <div id="container"></div>
+<!-- Hero Section -->
+<div class="bg-burgundy text-light py-5">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold">Explore Your Perfect Necklace</h1>
+        <p class="lead">Customize your own necklace with premium materials, beautiful fonts, and endless personalization options.</p>
+        <a href="/product/create/" class="btn btn-outline-light mt-3">Start Customizing</a>
+    </div>
 </div>
 
-<!-- Include Three.js and GLTFLoader -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/loaders/GLTFLoader.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/loaders/FontLoader.min.js"></script>
+<!-- Benefits Section -->
+<div class="container my-5">
+    <h2 class="text-center mb-4">Why Choose Us?</h2>
+    <div class="row text-center">
+        <div class="col-md-4">
+            <i class="bi bi-shield-check display-4 text-burgundy"></i>
+            <h5 class="mt-3">2 Year Warranty</h5>
+            <p>Enjoy peace of mind with our 2-year product warranty.</p>
+        </div>
+        <div class="col-md-4">
+            <i class="bi bi-truck display-4 text-burgundy"></i>
+            <h5 class="mt-3">Free Shipping & Returns</h5>
+            <p>We offer free shipping and hassle-free returns on all orders.</p>
+        </div>
+        <div class="col-md-4">
+            <i class="bi bi-box-seam display-4 text-burgundy"></i>
+            <h5 class="mt-3">Next Day Delivery</h5>
+            <p>Get your order delivered the very next day*.</p>
+        </div>
+    </div>
+    <div class="text-center mt-4">
+        <a href="{% url 'delivery_returns' %}" class="btn btn-burgundy">Learn More</a>
+    </div>
+</div>
 {% endblock %}

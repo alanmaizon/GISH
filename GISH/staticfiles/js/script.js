@@ -1,5 +1,11 @@
-// Common variables
+// Global variables for Three.js
 let scene, camera, renderer, textMesh;
+let currentFontPath = '/static/fonts/MAGENTA.json'; // Default font
+let currentMaterial = new THREE.MeshStandardMaterial({
+    color: 0xc57d5a, // Default: Rose Gold
+    roughness: 0.5,
+    metalness: 0.5,
+});
 
 // Initialize the scene
 function init(containerId) {
@@ -7,10 +13,10 @@ function init(containerId) {
     scene.background = new THREE.Color(0x111111);
 
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 2, 5);
+    camera.position.set(0, 1, 4);
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(600, 400);
+    renderer.setSize(window.innerWidth / 2, window.innerHeight / 2);
     document.getElementById(containerId).appendChild(renderer.domElement);
 
     // Lighting
@@ -21,17 +27,17 @@ function init(containerId) {
     directionalLight.position.set(0, 1, 1).normalize();
     scene.add(directionalLight);
 
-    // Initial text
-    loadFontAndCreateText("GISH");
+    // Load initial text
+    loadFontAndCreateText('Gish');
 
-    // Animate
+    // Animation loop
     animate();
 }
 
-// Load font and create text
+// Load font and create text mesh
 function loadFontAndCreateText(message) {
     const fontLoader = new THREE.FontLoader();
-    fontLoader.load('static/fonts/MAGENTA.json', function (font) {
+    fontLoader.load(currentFontPath, function (font) {
         createTextMesh(message, font);
     });
 }
@@ -40,35 +46,85 @@ function loadFontAndCreateText(message) {
 function createTextMesh(message, font) {
     const textGeometry = new THREE.TextGeometry(message, {
         font: font,
-        size: 0.5,
-        height: 0.1,
-        curveSegments: 40,
+        size: 1,
+        height: 0.2,
+        curveSegments: 12,
         bevelEnabled: true,
-        bevelThickness: 0.02,
-        bevelSize: 0.01,
-        bevelSegments: 5
-    });
-
-    const textureLoader = new THREE.TextureLoader();
-    const textMaterial = new THREE.MeshStandardMaterial({
-        color: 0xffd700, // Gold color
-        map: textureLoader.load('static/textures/text_texture.png')
+        bevelThickness: 0.05,
+        bevelSize: 0.02,
+        bevelSegments: 5,
     });
 
     if (textMesh) {
-        scene.remove(textMesh);
+        scene.remove(textMesh); // Remove old text mesh
     }
 
-    textMesh = new THREE.Mesh(textGeometry, textMaterial);
+    textMesh = new THREE.Mesh(textGeometry, currentMaterial);
     textGeometry.computeBoundingBox();
-    const textWidth = textGeometry.boundingBox.max.x - textGeometry.boundingBox.min.x;
-    textMesh.position.set(-textWidth / 2, 1, 0);
+    const boundingBox = textGeometry.boundingBox;
+    const center = new THREE.Vector3();
+    boundingBox.getCenter(center);
+    textGeometry.translate(-center.x, -center.y, -center.z);
+    textMesh.position.set(0, 1, 0);
     scene.add(textMesh);
 }
 
-// Update text dynamically
-function updateText() {
-    const userInput = document.getElementById('userInput').value.trim();
+function updatePreview() {
+    // Get the selected custom name
+    const userInput = document.getElementById('id_custom_name').value.trim();
+
+    // Get the selected font style
+    const fontStyleElement = document.getElementById('id_font_style');
+    const fontStyle = fontStyleElement.options[fontStyleElement.selectedIndex].text;
+
+    // Get the selected material
+    const materialElement = document.getElementById('id_material');
+    const materialName = materialElement.options[materialElement.selectedIndex].text;
+
+    // Update the font
+    switch (fontStyle) {
+        case 'Script':
+            currentFontPath = '/static/fonts/MAGENTA.json';
+            break;
+        case 'Bold':
+            currentFontPath = '/static/fonts/block.json';
+            break;
+        default:
+            currentFontPath = '/static/fonts/MAGENTA.json'; // Default font
+    }
+
+    // Update the material
+    switch (materialName) {
+        case 'Silver':
+            currentMaterial = new THREE.MeshStandardMaterial({
+                color: 0xc0c0c0, // Silver
+                roughness: 0.5,
+                metalness: 0.8,
+            });
+            break;
+        case 'Gold':
+            currentMaterial = new THREE.MeshStandardMaterial({
+                color: 0xffd700, // Gold
+                roughness: 0.4,
+                metalness: 0.9,
+            });
+            break;
+        case 'Rose Gold':
+            currentMaterial = new THREE.MeshStandardMaterial({
+                color: 0xc57d5a, // Rose Gold
+                roughness: 0.5,
+                metalness: 0.5,
+            });
+            break;
+        default:
+            currentMaterial = new THREE.MeshStandardMaterial({
+                color: 0xc57d5a, // Default: Rose Gold
+                roughness: 0.5,
+                metalness: 0.5,
+            });
+    }
+
+    // Update the text
     if (userInput.length > 0 && userInput.length <= 10) {
         loadFontAndCreateText(userInput);
     } else {
@@ -76,22 +132,17 @@ function updateText() {
     }
 }
 
+
 // Animation loop
 function animate() {
     requestAnimationFrame(animate);
     if (textMesh) {
-        textMesh.rotation.y += 0.01; // Rotate the text
+        textMesh.rotation.y += 0.003; // Rotate the text
     }
     renderer.render(scene, camera);
 }
 
-// Initialize the scene
+// Initialize the scene on page load
 if (document.getElementById('container')) {
     init('container');
 }
-
-window.addEventListener('resize', function () {
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-});

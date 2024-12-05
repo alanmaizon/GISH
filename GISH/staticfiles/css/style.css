@@ -1,4 +1,38 @@
-.container {
-    height: 400px;
-    width: 600px;
+canvas {
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    height: auto;
+}
+
+/* Hero Section */
+.bg-burgundy {
+    background-color: #800020; /* Burgundy */
+    color: #ffffff;
+}
+
+/* Custom Button Colors */
+.btn-burgundy {
+    background-color: #800020;
+    color: #ffffff;
+    border: none;
+}
+
+.btn-burgundy:hover {
+    background-color: #a83240;
+    color: #ffffff;
+}
+
+/* Benefits Icons and Text */
+.text-burgundy {
+    color: #800020;
+}
+
+.bi {
+    font-size: 3rem;
+}
+
+h5 {
+    font-weight: bold;
 }

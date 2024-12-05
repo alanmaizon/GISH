@@ -120,3 +120,6 @@ def get_price(request):
         price = Material.objects.filter(id=item_id).values_list('price_modifier', flat=True).first()
 
     return JsonResponse({'price': price})
+
+def delivery_returns(request):
+    return render(request, 'orders/delivery_returns.html')
