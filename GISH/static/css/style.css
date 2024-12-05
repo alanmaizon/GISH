@@ -20,6 +20,7 @@ canvas {
 
 /* Hero Section */
 .bg-burgundy {
+    background-image: url(img/sea.gif);
     background-color: #800020; /* Burgundy */
     color: #ffffff;
 }
