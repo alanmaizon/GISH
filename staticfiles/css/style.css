@@ -9,6 +9,7 @@ canvas {
 /* Hero Section */
 .bg-burgundy {
     background-image: url(img/water.gif);
+    background-size: cover;
     background-color: #800020; /* Burgundy */
     color: #ffffff;
 }
