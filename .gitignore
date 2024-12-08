@@ -3,7 +3,7 @@
 admin/
 node_modules/
 # Ignore environment file and folder
-GISH/.env
+.env
 
 # Ignore Python bytecode files
 **__pycache__/
